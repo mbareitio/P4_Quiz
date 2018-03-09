@@ -211,11 +211,11 @@ exports.testCmd = (rl, id) => {
   	.then(id => models.quiz.findById(id))
   	.then(quiz => {
   		if (!quiz){
-  			throw new Error (`No existe un quien asociado al id=${id}.`);
+  			throw new Error (`No existe un quiz asociado al id=${id}.`);
   	  	}
   	  	log(``);
   		log(`${colorize('Pregunta:', 'black')} ${quiz.question}`);
-  		makeQuestion(rl , `${colorize('Respuesta:', 'black')}`)
+  		return makeQuestion(rl , `${colorize('Respuesta: ', 'black')}`)
   		.then(a => {
   			if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
 				log(`${colorize('La respuesta es', 'black')} ${colorize('correcta', 'green')} `);
@@ -249,43 +249,59 @@ exports.testCmd = (rl, id) => {
 
 	let toBeResolved = []; // Array con todos los ids de las preguntas que existen array de tamaño model.count
 
-	for (i = 0; i < model.count(); i++) {
-    toBeResolved[i] = i;
-	};
+	models.quiz.findAll()
+	.then(quizzes => {
+		quizzes.forEach((quiz,id) =>{
+			toBeResolved[id] = quiz;
+		});
+	
+		const play = () => {
+			if (toBeResolved.length === 0 || toBeResolved[0] === "undefined" || typeof toBeResolved === "undefined"){
+				log(`${colorize('Ya no hay mas preguntas!', 'black')} `);
+				biglog(` Puntuación: ${score}`, 'magenta');
 
-	const play = () => {
-	if(toBeResolved.length == 0){
-		log(`${colorize('Ya no hay mas preguntas!', 'black')} `);
-		biglog(` Puntuación: ${score}`, 'yellow');
-		rl.prompt();
-	}else{
-		let id = toBeResolved[Math.floor(Math.random() * (toBeResolved.length -1))];
-		let quiz = model.getByIndex(id);
-
-		for (i=0; i<toBeResolved.length; i++){
-			if(toBeResolved[i] == id){
+			} else {
+				let i = Math.floor(Math.random() * (toBeResolved.length -1));
+				let quiz = toBeResolved[i];
+				log(``);
+	  			log(`${colorize('Pregunta:', 'black')} ${quiz.question}`);
 				toBeResolved.splice(i, 1);
+					
+				return makeQuestion(rl,`${colorize('Respuesta: ', 'black')}`)
+
+				.then(a => {
+		  			if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
+		  				score++;
+						log(`${colorize('La respuesta es', 'black')} ${colorize('correcta', 'green')} `);
+						biglog(`+1`, 'yellow');
+						play();
+		  			}else{
+						log(`${colorize('La respuesta es', 'black')} ${colorize('incorrecta', 'red')} `);
+						biglog(` Puntuación: ${score}`, 'magenta');
+		  			}
+	  			})
+	  			.then(() => {
+	  				rl.prompt();
+	  			})
 			}
-		}	
+		};	
+	
+		play()
+	})
+	.catch(Sequelize.ValidationError, error => {
+		errorlog('El quiz es erroneo:');
+		error.errors.forEach(({message}) => errorlog(message));
+	})
 
-		rl.question(colorize(`${quiz.question}? `,'magenta'), answer => {				
-			if(quiz.answer.toLowerCase() === answer.trim().toLowerCase()){
-				score++;
-				log(`${colorize('La respuesta es', 'black')} ${colorize('correcta', 'green')} `);
-				play();
-			} else{
-				log(`${colorize('La respuesta es', 'black')} ${colorize('incorrecta', 'red')} `);
-				log(`${colorize('Fin de la partida', 'black')} `);
-				biglog(`Puntuación: ${score}`,'yellow');
-				rl.prompt();
-				};	
-			});
-		}
-	}
- play();
+  	.catch(error => {
+  		errorlog(error.message);
+  	})
 
-};
-
+  	.then(() => {
+  		rl.prompt();
+  	});
+  	
+}
 
 /**
  *  Muestra los nombres de los autores de la práctica.
@@ -308,6 +324,3 @@ exports.quitCmd = rl => {
 	rl.close();
 };
   	
-  	
-
-
