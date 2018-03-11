@@ -257,7 +257,7 @@ exports.testCmd = (rl, id) => {
 	
 		const play = () => {
 			if (toBeResolved.length === 0 || toBeResolved[0] === "undefined" || typeof toBeResolved === "undefined"){
-				log(`${colorize('Ya no hay mas preguntas! Fin del juego!', 'black')} ${colorize(`Puntuación: ${score}`, 'magenta')} `);
+				log(`${colorize('Ya no hay mas preguntas! Fin del juego!', 'black')} Fin ${colorize(`Puntuación: ${score}`, 'magenta')} `);
 			} else {
 				let i = Math.floor(Math.random() * (toBeResolved.length -1));
 				let quiz = toBeResolved[i];
