@@ -218,9 +218,9 @@ exports.testCmd = (rl, id) => {
   		return makeQuestion(rl , `${colorize('Respuesta: ', 'black')}`)
   		.then(a => {
   			if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
-				console.log(`${colorize('La respuesta es', 'black')} ${colorize('correcta', 'green')}. `);
+				console.log(`${colorize('La respuesta es', 'black')} correcta ${colorize('correcta', 'green')}. `);
   			}else{
-				console.log(`${colorize('La respuesta es', 'black')} ${colorize('incorrecta', 'red')}. `);
+				console.log(`${colorize('La respuesta es', 'black')} incorrecta ${colorize('incorrecta', 'red')}. `);
   			}
   		})
   	})
@@ -257,7 +257,7 @@ exports.testCmd = (rl, id) => {
 	
 		const play = () => {
 			if (toBeResolved.length === 0 || toBeResolved[0] === "undefined" || typeof toBeResolved === "undefined"){
-				log(`${colorize('Ya no hay mas preguntas!', 'black')} ${colorize(`Puntuación: ${score}`, 'magenta')} `);
+				log(`${colorize('Ya no hay mas preguntas! Fin del juego!', 'black')} ${colorize(`Puntuación: ${score}`, 'magenta')} `);
 			} else {
 				let i = Math.floor(Math.random() * (toBeResolved.length -1));
 				let quiz = toBeResolved[i];
@@ -270,10 +270,10 @@ exports.testCmd = (rl, id) => {
 				.then(a => {
 		  			if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
 		  				score++;
-						console.log(`${colorize('La respuesta es', 'black')} ${colorize('correcta', 'green')}. ${colorize('Puntuación: +1', 'magenta')}`);
+						console.log(`${colorize('La respuesta es', 'black')} correcta ${colorize('correcta', 'green')}. ${colorize('Puntuación: +1', 'magenta')}`);
 						play();
 		  			}else{
-						console.log(`${colorize('La respuesta es', 'black')} ${colorize('incorrecta', 'red')}.  ${colorize(`Puntuación: ${score}`, 'magenta')}`);
+						console.log(`${colorize('La respuesta es', 'black')} incorrecta ${colorize('incorrecta', 'red')}.  ${colorize(`Puntuación: ${score}`, 'magenta')}`);
 		  			}
 	  			})
 	  			.then(() => {
