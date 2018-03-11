@@ -218,9 +218,9 @@ exports.testCmd = (rl, id) => {
   		return makeQuestion(rl , `${colorize('Respuesta: ', 'black')}`)
   		.then(a => {
   			if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
-				console.log(`${colorize('La respuesta es', 'black')} correcta ${colorize('correcta', 'green')}. `);
+				console.log(`correcta ${colorize('La respuesta es', 'black')} ${colorize('correcta', 'green')}. `);
   			}else{
-				console.log(`${colorize('La respuesta es', 'black')} incorrecta ${colorize('incorrecta', 'red')}. `);
+				console.log(`incorrecta ${colorize('La respuesta es', 'black')}  ${colorize('incorrecta', 'red')}. `);
   			}
   		})
   	})
@@ -257,7 +257,7 @@ exports.testCmd = (rl, id) => {
 	
 		const play = () => {
 			if (toBeResolved.length === 0 || toBeResolved[0] === "undefined" || typeof toBeResolved === "undefined"){
-				log(`${colorize('Ya no hay mas preguntas! Fin del juego!', 'black')} Fin ${colorize(`Puntuación: ${score}`, 'magenta')} `);
+				log(` Fin ${colorize('Ya no hay mas preguntas! Fin del juego!', 'black')}  ${colorize(`Puntuación: ${score}`, 'magenta')} `);
 			} else {
 				let i = Math.floor(Math.random() * (toBeResolved.length -1));
 				let quiz = toBeResolved[i];
@@ -270,12 +270,15 @@ exports.testCmd = (rl, id) => {
 				.then(a => {
 		  			if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
 		  				score++;
-						console.log(`${colorize('La respuesta es', 'black')} correcta ${colorize('correcta', 'green')}. ${colorize('Puntuación: +1', 'magenta')}`);
-						play();
+						console.log(`correcta ${colorize('La respuesta es', 'black')}  ${colorize('correcta', 'green')}. ${colorize('Puntuación: +1', 'magenta')}`);
+						return play();
 		  			}else{
-						console.log(`${colorize('La respuesta es', 'black')} incorrecta ${colorize('incorrecta', 'red')}.  ${colorize(`Puntuación: ${score}`, 'magenta')}`);
+						console.log(`incorrecta ${colorize('La respuesta es', 'black')}  ${colorize('incorrecta', 'red')}.  ${colorize(`Puntuación: ${score}`, 'magenta')}`);
 		  			}
 	  			})
+	  			.catch(error => {
+  					errorlog(error.message);
+  				})
 	  			.then(() => {
 	  				rl.prompt();
 	  			})
@@ -284,19 +287,6 @@ exports.testCmd = (rl, id) => {
 	
 		play()
 	})
-	.catch(Sequelize.ValidationError, error => {
-		errorlog('El quiz es erroneo:');
-		error.errors.forEach(({message}) => errorlog(message));
-	})
-
-  	.catch(error => {
-  		errorlog(error.message);
-  	})
-
-  	.then(() => {
-  		rl.prompt();
-  	});
-  	
 }
 
 /**
