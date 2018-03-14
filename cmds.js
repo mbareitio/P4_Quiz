@@ -222,9 +222,6 @@ exports.testCmd = (rl, id) => {
                 console.log(' incorrect ');
             }
         })
-        .then(() => {
-            rl.prompt();
-        });
     })
     .catch(Sequelize.ValidationError, error => {
         errorlog('El quiz es erroneo:');
@@ -245,48 +242,47 @@ exports.testCmd = (rl, id) => {
  *
  * @param rl Objeto readline usado para implementar el CLI.
  */
-  exports.playCmd = rl => {
+exports.playCmd = rl => {
 
-    let score = 0;
+    let score = 0
+    let toBeResolved = [] // Array con todos los ids de las preguntas que existen array de tamaño model.count
 
-    let toBeResolved = []; // Array con todos los ids de las preguntas que existen array de tamaño model.count
+    const play = () => {
+        return new Promise((resolve, reject) => {
+            if (toBeResolved.length === 0 || toBeResolved[0] === "undefined" || typeof toBeResolved === "undefined") {
+                resolve(console.log(` Fin del juego. Puntuación: ${score}`))
+            } else {
+                let i = Math.floor(Math.random() * (toBeResolved.length -1));
+                let quiz = toBeResolved[i];
+                console.log(`${colorize('Pregunta:', 'black')} ${quiz.question}`);
+                toBeResolved.splice(i, 1);
+                
+                makeQuestion(rl,`${colorize('Respuesta: ', 'black')}`)
+                .then(a => {
+                    if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
+                        score++;
+                        console.log('Respuesta correcta.');
+                        resolve(play())
+                    }else{
+                        resolve(console.log('Respuesta incorrecta.'))
+                    }
+                })
+            }
+        })
+    }
 
     models.quiz.findAll()
     .then(quizzes => {
         quizzes.forEach((quiz,id) =>{
             toBeResolved[id] = quiz;
         });
-    
-        const play = () => {
-            if (toBeResolved.length === 0 || toBeResolved[0] === "undefined" || typeof toBeResolved === "undefined"){
-                console.log(` Fin del juego. Puntuación: ${score}`);
-            } else {
-                let i = Math.floor(Math.random() * (toBeResolved.length -1));
-                let quiz = toBeResolved[i];
-                console.log(`${colorize('Pregunta:', 'black')} ${quiz.question}`);
-                toBeResolved.splice(i, 1);
-                    
-                return makeQuestion(rl,`${colorize('Respuesta: ', 'black')}`)
-
-                .then(a => {
-                    if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
-                        score++;
-                        console.log('correcta');
-                        return play();
-                    }else{
-                        console.log('incorrecta');
-                    }
-                })
-                .catch(error => {
-                    errorlog(error.message);
-                })
-                .then(() => {
-                    rl.prompt();
-                })
-            }
-        };  
-    
-        play()
+    })
+    .then(() => play())
+    .catch(error => {
+        errorlog(error.message);
+    })
+    .then(() => {
+        rl.prompt();
     })
 }
 
