@@ -222,6 +222,9 @@ exports.testCmd = (rl, id) => {
                 console.log(' incorrect ');
             }
         })
+        .then(() => {
+            rl.prompt();
+        });
     })
     .catch(Sequelize.ValidationError, error => {
         errorlog('El quiz es erroneo:');
