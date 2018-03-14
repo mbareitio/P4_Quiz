@@ -217,11 +217,9 @@ exports.testCmd = (rl, id) => {
             makeQuestion(rl , `${colorize('Respuesta: ', 'black')}`)
             .then(a => {
                 if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
-                    console.log(' correct ')
-                    resolve()
-                } else {
-                    console.log(' incorrect ')
-                    resolve()
+                    resolve(console.log(' correct '))
+                }else{
+                    resolve(console.log(' incorrect '));
                 }
             })
         })
@@ -257,8 +255,7 @@ exports.playCmd = rl => {
     const play = () => {
         return new Sequelize.Promise((resolve, reject) => {
             if (toBeResolved.length === 0 || toBeResolved[0] === "undefined" || typeof toBeResolved === "undefined") {
-                console.log(` Fin del juego. Puntuación: ${score}`)
-                resolve()
+                resolve(console.log(` Fin del juego. Puntuación: ${score}`))
             } else {
                 let i = Math.floor(Math.random() * (toBeResolved.length -1));
                 let quiz = toBeResolved[i];
@@ -272,8 +269,7 @@ exports.playCmd = rl => {
                         console.log('Respuesta correcta.');
                         resolve(play())
                     }else{
-                        console.log('Respuesta incorrecta.')
-                        resolve()
+                        resolve(console.log('Respuesta incorrecta.'))
                     }
                 })
             }
