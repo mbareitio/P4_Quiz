@@ -217,9 +217,9 @@ exports.testCmd = (rl, id) => {
         return makeQuestion(rl , `${colorize('Respuesta: ', 'black')}`)
         .then(a => {
             if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
-                console.log('correct');
+                console.log(' correct ');
             }else{
-                console.log('incorrect');
+                console.log(' incorrect ');
             }
         })
     })
