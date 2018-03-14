@@ -268,8 +268,8 @@ exports.playCmd = rl => {
                         score++;
                         console.log('Respuesta correcta.');
                         resolve(play())
-                    }else{
-                        resolve(console.log('Respuesta incorrecta.'))
+                    } else {
+                        resolve(console.log(`Respuesta incorrecta. Fin del juego. Puntuación: ${score}`))
                     }
                 })
             }
