@@ -114,7 +114,7 @@ const makeQuestion = (rl, text) => {
 exports.addCmd = rl => {
     makeQuestion(rl, ' Introduzca una pregunta: ')
     .then(q => {
-        makeQuestion(rl, ' Introduzca una respuesta: ')
+        return makeQuestion(rl, ' Introduzca una respuesta: ')
         .then(a =>{
             return {question: q, answer: a};
         });
