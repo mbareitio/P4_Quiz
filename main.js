@@ -84,8 +84,6 @@ rl
       	break;
 
   }
-  rl.prompt();
-
 })
 .on('close', () => {
   console.log('Adiós!');
