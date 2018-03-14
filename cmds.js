@@ -266,7 +266,7 @@ exports.playCmd = rl => {
                 .then(a => {
                     if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
                         score++;
-                        console.log('Respuesta correcta.');
+                        console.log(`Respuesta correcta. Puntuación: ${score}`);
                         resolve(play())
                     } else {
                         resolve(console.log(`Respuesta incorrecta. Fin del juego. Puntuación: ${score}`))
