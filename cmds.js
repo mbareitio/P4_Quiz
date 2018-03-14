@@ -207,22 +207,27 @@ exports.editCmd = (rl, id) => {
  * @param id Clave el quiz a probar.
  */
 exports.testCmd = (rl, id) => {
+    const testOne = quiz => {
+        return new Sequelize.Promise((resolve, reject) => {
+            if (!quiz){
+                reject(new Error (`No existe un quiz asociado al id=${id}.`))
+            }
+
+            log(`${colorize('Pregunta:', 'black')} ${quiz.question}`);
+            makeQuestion(rl , `${colorize('Respuesta: ', 'black')}`)
+            .then(a => {
+                if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
+                    resolve(console.log(' correct '))
+                }else{
+                    resolve(console.log(' incorrect '));
+                }
+            })
+        })
+    }
+
     validateId(id)
     .then(id => models.quiz.findById(id))
-    .then(quiz => {
-        if (!quiz){
-            throw new Error (`No existe un quiz asociado al id=${id}.`);
-        }
-        log(`${colorize('Pregunta:', 'black')} ${quiz.question}`);
-        return makeQuestion(rl , `${colorize('Respuesta: ', 'black')}`)
-        .then(a => {
-            if(quiz.answer.toLowerCase() === a.toLowerCase().trim()){
-                console.log(' correct ');
-            }else{
-                console.log(' incorrect ');
-            }
-        })
-    })
+    .then(quiz => testOne(quiz))
     .catch(Sequelize.ValidationError, error => {
         errorlog('El quiz es erroneo:');
         error.errors.forEach(({message}) => errorlog(message));
@@ -248,7 +253,7 @@ exports.playCmd = rl => {
     let toBeResolved = [] // Array con todos los ids de las preguntas que existen array de tamaño model.count
 
     const play = () => {
-        return new Promise((resolve, reject) => {
+        return new Sequelize.Promise((resolve, reject) => {
             if (toBeResolved.length === 0 || toBeResolved[0] === "undefined" || typeof toBeResolved === "undefined") {
                 resolve(console.log(` Fin del juego. Puntuación: ${score}`))
             } else {
