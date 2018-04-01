@@ -250,7 +250,7 @@ exports.testCmd = (socket, rl, id) => {
  *
  * @param rl Objeto readline usado para implementar el CLI.
  */
-exports.playCmd = rl => {
+exports.playCmd = (socket, rl) => {
 
     let score = 0
     let toBeResolved = [] // Array con todos los ids de las preguntas que existen array de tamaño model.count
